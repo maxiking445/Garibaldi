@@ -1,4 +1,6 @@
+
 <script>
+import extractZip from '@/scripts/extract_zip.py?raw'
 export default {
   data() {
     return { pyodide: null }
@@ -53,15 +55,14 @@ export default {
     // =========================
     // Extract ZIP in Pyodide FS
     // =========================
-    async extractZip(zipPath, extractTo) {
-      console.log('Extracting ZIP...')
-      await this.pyodide.runPythonAsync(`
-import zipfile, os
-with zipfile.ZipFile("${zipPath}", "r") as zip_ref:
-    zip_ref.extractall("${extractTo}")
-print("Extracted files:", os.listdir("${extractTo}"))
-      `)
-    },
+async extractZip(zipPath, extractTo) {
+  console.log('Extracting ZIP...')
+  await this.pyodide.runPythonAsync(
+    extractZip
+      .replaceAll('${zipPath}', zipPath)
+      .replaceAll('${extractTo}', extractTo)
+  )
+},
 
     // =========================
     // Install dependencies from requirements.txt
