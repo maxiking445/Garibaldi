@@ -2,6 +2,7 @@
 <script>
 import extractZip from '@/scripts/extract_zip.py?raw'
 import installDeps from '@/scripts/install_deps.py?raw'
+import runExtractor from '@/scripts/runExtractor.py?raw'
 export default {
   data() {
     return { pyodide: null }
@@ -89,28 +90,10 @@ print("Project/python:", os.listdir("project/python"))
     async runMainPy(projectPath) {
       console.log('Running main.py...')
 
-      const script = `
-import sys, os, runpy
-
-# Pfade richtig setzen
-sys.path.extend([
-    "${projectPath}",
-    os.path.join("${projectPath}", "src"),
-])
-
-# Arbeitsverzeichnis ändern (wichtig!)
-os.chdir("${projectPath}")
-
-print("Current working dir:", os.getcwd())
-print("Files in src:", os.listdir(os.path.join("${projectPath}", "src")))
-
-# CLI-Argumente simulieren
-sys.argv = ["web_extractSave.py", "Test"]
-
-# Skript ausführen
-runpy.run_path(os.path.join("${projectPath}", "src", "web_extractSave.py"), run_name="__main__")
-`
-      const result = await this.pyodide.runPythonAsync(script)
+      const result = await this.pyodide.runPythonAsync(
+                runExtractor
+      .replaceAll('${projectPath}', projectPath)
+  )
       console.log('Python output:', result)
     },
   },
