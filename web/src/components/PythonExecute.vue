@@ -1,6 +1,7 @@
 
 <script>
 import extractZip from '@/scripts/extract_zip.py?raw'
+import installDeps from '@/scripts/install_deps.py?raw'
 export default {
   data() {
     return { pyodide: null }
@@ -76,16 +77,10 @@ print("Root:", os.listdir("/"))
 print("Project:", os.listdir("project"))
 print("Project/python:", os.listdir("project/python"))
 `)
-      await this.pyodide.runPythonAsync(`
-import os, micropip
-if os.path.exists("${reqPath}"):
-    with open("${reqPath}") as f:
-        packages = [line.strip() for line in f if line.strip() and not line.startswith("#")]
-        print("Installing:", packages)
-        await micropip.install(packages)
-else:
-    print("No requirements.txt found")
-      `)
+      await this.pyodide.runPythonAsync(
+                installDeps
+      .replaceAll('${reqPath}', reqPath)
+  )
     },
 
     // =========================
