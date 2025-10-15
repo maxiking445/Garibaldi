@@ -34,8 +34,8 @@ export default {
       try {
         await this.downloadZip('/python.zip')
         await this.extractZip('python.zip', 'project')
-        await this.installDependencies('project/python/requirements.txt')
-        await this.runMainPy('project/python/')
+        await this.installDependencies('project/requirements.txt')
+        await this.runMainPy('project/')
       } catch (err) {
         console.error('Error running Python project:', err)
       }
@@ -76,7 +76,7 @@ async extractZip(zipPath, extractTo) {
 import os
 print("Root:", os.listdir("/"))
 print("Project:", os.listdir("project"))
-print("Project/python:", os.listdir("project/python"))
+print("Project/python:", os.listdir("project"))
 `)
       await this.pyodide.runPythonAsync(
                 installDeps
